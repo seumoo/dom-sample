@@ -40,15 +40,15 @@ function createNotificationDom(tableDataArray) {
  * @param {HTMLElement} tableDomElement - <table> DOM element
  */
 function createTableHeader(firstDataObject, tableDomElement) {
-    const tableHeaderRowElement = document.createElement("tr");          // creates <tr> HTML DOM element
+    const tableHeaderRowElement = document.createElement("tr");         // creates <tr> HTML DOM element
 
     for (const [key, value] of Object.entries(firstDataObject)) {
         const tableHeaderElement = document.createElement("th");        // creates <th> HTML DOM element
-        tableHeaderElement.innerHTML = key;                             // set the text contents of <th>
-        tableHeaderRowElement.append(tableHeaderElement);               // add the <th> element to the <tr> element
+        tableHeaderElement.innerHTML = key;                             // sets the text contents of <th>
+        tableHeaderRowElement.append(tableHeaderElement);               // appends the <th> element to the <tr> element
     }
 
-    tableDomElement.append(tableHeaderRowElement);
+    tableDomElement.append(tableHeaderRowElement);                      // appends <tr> to the <table> element
 }
 
 /**
@@ -56,16 +56,36 @@ function createTableHeader(firstDataObject, tableDomElement) {
  * @param {Object} dataItem - an object containing table data
  * @param {HTMLElement} tableDomElement - <table> DOM element
  */
-function createTableRow(dataItem, tableDomElement) {
-    const tableRowElement = document.createElement("tr");                // creates <tr> HTML DOM element
+function createTableData(dataItem, tableDomElement) {
+    const tableRowElement = document.createElement("tr");             // creates <tr> HTML DOM element
 
     for (const [key, value] of Object.entries(dataItem)) {
-        const tableHeaderElement = document.createElement("td");        // creates <th> HTML DOM element
-        tableHeaderElement.innerHTML = value;                           // set the text contents of <th>
-        tableRowElement.append(tableHeaderElement);                     // Add the <th> element to the <tr> element
+        const tableDataElement = document.createElement("td");        // creates <td> HTML DOM element
+        tableDataElement.innerHTML = value;                           // sets the text contents of <td>
+        tableRowElement.append(tableDataElement);                     // appends the <td> element to the <tr> element
     }
 
-    tableDomElement.append(tableRowElement);
+    tableDomElement.append(tableRowElement);                          // appends <tr> to the <table> element
+}
+
+/**
+ * (Optional)
+ * Creates a table header <th> or row <tr> DOM element. Appends the <tr> DOM element to a <table> DOM element
+ * @param {Object} dataItem - an object containing table data
+ * @param {HTMLElement} tableDomElement - <table> DOM element
+ * @param {boolean} isHeader - true if object is processed as a header row; false if the object is processed as a data row
+ */
+ function createTableRow(dataItem, tableDomElement, isHeader = false) {
+    const tableRowElement = document.createElement("tr");                   // creates <tr> HTML DOM element
+    const tableDataTag = `${isHeader ? "th" : "td"}`;                       // "th" if isHeader = true; else "td"
+
+    for (const [key, value] of Object.entries(dataItem)) {
+        const tableDataElement = document.createElement(tableDataTag);      // creates a <th> or <td> HTML DOM element
+        tableDataElement.innerHTML = `${isHeader ? key : value}`;           // set the text contents of <td>
+        tableRowElement.append(tableDataElement);                           // a the <td> element to the <tr> element
+    }
+
+    tableDomElement.append(tableRowElement);                                // append <tr> to the <table> element
 }
 
 /**
@@ -81,7 +101,7 @@ function createTableDom(tableDataArray) {
 
         // if this is the first item in the table, create table headers <th>
         if (index === 0) {
-            createTableHeader(tableDataObject, tableElement);
+            createTableRow(tableDataObject, tableElement, true);
         }
 
         // process each item in the array into a table row <tr>
@@ -95,11 +115,11 @@ function createTableDom(tableDataArray) {
  * Gets an object array and displays an HTML DOM table of the array contents
  */
 function displayDomTable() {
-    const tableDataArray = getTableData();       // get the JSON array
-    createNotificationDom(tableDataArray);      // display the number of elements in the JSON array
+    const tableDataArray = getTableData();      // get the object array which stores the table data
+    createNotificationDom(tableDataArray);      // display the number of elements in the object array
 
     if (tableDataArray !== null) {
-        createTableDom(tableDataArray);
+        createTableDom(tableDataArray);         // create an HTML DOM table using the objects in the array
     }
 }
 
